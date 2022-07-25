@@ -1,6 +1,6 @@
 const CKB_SUCCESS: i32 = 0;
 
-#[link(name = "ckb-lib-secp256k1", kind="static")]
+#[link(name = "ckb-lib-secp256k1", kind = "static")]
 extern "C" {
     fn validate_secp256k1_blake2b_sighash_all(pubkey_hash: *const u8) -> i32;
 }
