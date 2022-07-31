@@ -12,9 +12,13 @@
 #![feature(panic_info_message)]
 
 // define modules
+mod claim;
+mod data;
 mod entry;
 mod error;
+mod hash;
 mod helper;
+mod withdraw;
 
 use ckb_std::default_alloc;
 use core::arch::asm;

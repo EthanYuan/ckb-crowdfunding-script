@@ -8,7 +8,15 @@ pub enum Error {
     LengthNotEnough,
     Encoding,
     // Add customized errors here...
-    MyError,
+    InvalidArgument = 5,
+    NoMatchedInputs,
+    WitnessSignatureWrong,
+    SenderCapacityNotSame,
+    WrongPubKey,
+    ClaimChequeInputSinceNotZero = 10,
+    WithdrawChequeInputSinceError,
+    Secp256k1,
+    NoMatchedSignature,
 }
 
 impl From<SysError> for Error {
