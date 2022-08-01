@@ -48,6 +48,27 @@ fn prepare_c_cell(context: &mut Context) -> (CellDep, [u8; 32]) {
     (c_cell_dep, data_hash)
 }
 
+fn parepare_receiver_key() -> (String, String, [u8; 20]) {
+    // random generation
+    // receiver_address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvgs9hktyzvdk4x33phd7pkvyccq6g9tnq4y2d5j"
+    // receiver_address_pk: "f8c30a5090d047c2eb4fde48de1034324edda6b1be0d84bbcb8644c5f1e944e0"
+    // receiver lock hash 160: [164, 115, 144, 235, 133, 93, 188, 69, 232, 219, 43, 186, 250, 76, 21, 212, 222, 136, 109, 103]
+    ("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvgs9hktyzvdk4x33phd7pkvyccq6g9tnq4y2d5j".to_string(), 
+    "f8c30a5090d047c2eb4fde48de1034324edda6b1be0d84bbcb8644c5f1e944e0".to_string(),
+    [164, 115, 144, 235, 133, 93, 188, 69, 232, 219, 43, 186, 250, 76, 21, 212, 222, 136, 109, 103])
+}
+
+fn prepare_sender_key() -> (String, String, [u8; 20]) {
+    // random generation
+    // sender_address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqtkuyljsvw7qkwq0jc8rx9ekwyeh5wkrfs0mh696"
+    // sender_address_pk: "263922d46c3acf249ae4f76f348bb0bb15ed6a5dc80f0253d3384ff078fe9fd8"
+    // sender lock hash 160: [152, 130, 119, 177, 187, 68, 13, 158, 215, 120, 60, 184, 77, 93, 71, 97, 70, 85, 100, 155]
+
+    ("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqtkuyljsvw7qkwq0jc8rx9ekwyeh5wkrfs0mh696".to_string(),
+        "263922d46c3acf249ae4f76f348bb0bb15ed6a5dc80f0253d3384ff078fe9fd8".to_string(), 
+    [152, 130, 119, 177, 187, 68, 13, 158, 215, 120, 60, 184, 77, 93, 71, 97, 70, 85, 100, 155])
+}
+
 #[test]
 fn test_success() {
     // deploy contract
@@ -59,10 +80,16 @@ fn test_success() {
     let contract_bin: Bytes = Loader::default().load_binary("ckb-crowdfunding-script");
     let out_point = context.deploy_cell(contract_bin);
 
+    // prepare address
+    let (receiver_address, receiver_key, receiver_lock_hash_h160) = parepare_receiver_key();
+    let (sender_address, sender_key, sender_lock_hash_h160) = prepare_sender_key();
+
     // prepare scripts
-    let lock_script = context
-        .build_script(&out_point, Bytes::from(data_hash.to_vec()))
-        .expect("script");
+    let mut args = data_hash.to_vec();
+    args.extend_from_slice(&receiver_lock_hash_h160);
+    args.extend_from_slice(&sender_lock_hash_h160);
+    let args = Bytes::from(args);
+    let lock_script = context.build_script(&out_point, args).expect("script");
     let lock_script_dep = CellDep::new_builder().out_point(out_point).build();
 
     // prepare cells

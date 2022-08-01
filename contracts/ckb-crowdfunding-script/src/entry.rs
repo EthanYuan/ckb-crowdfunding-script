@@ -45,12 +45,13 @@ pub fn main() -> Result<(), Error> {
     let crowdfunding_info = CrowdfundingInfo::try_from(index)?;
     debug!("crowdfunding_info is {:?}", crowdfunding_info);
 
-    // unlock
-    // let mut receiver_lock_hash = [0u8; 20];
-    // let mut sender_lock_hash = [0u8; 20];
-    // receiver_lock_hash.copy_from_slice(&args[32..52]);
-    // sender_lock_hash.copy_from_slice(&args[52..72]);
+    // parse script args
+    let mut receiver_lock_hash = [0u8; 20];
+    let mut sender_lock_hash = [0u8; 20];
+    receiver_lock_hash.copy_from_slice(&args[32..52]);
+    sender_lock_hash.copy_from_slice(&args[52..72]);
 
+    // unlock
     // match helper::validate_signature_of_receiver_and_sender(&receiver_lock_hash, &sender_lock_hash)
     // {
     //     Ok(is_receiver) => {
