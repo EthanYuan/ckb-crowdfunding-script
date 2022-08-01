@@ -6,7 +6,9 @@ use ckb_std::{
 
 use super::hash;
 use crate::error::Error;
+
 use alloc::vec::Vec;
+use ckb_std::debug;
 
 const CKB_SUCCESS: i32 = 0;
 
@@ -76,7 +78,9 @@ pub fn validate_signature_of_receiver_and_sender(
     sender_lock_hash: &[u8; 20],
 ) -> Result<bool, Error> {
     let mut public_key_hash = [0u8; 20];
+    debug!("public_key_hash: {:?}", public_key_hash);
     validate_blake2b_signature(&mut public_key_hash).map_err(|_| Error::Secp256k1)?;
+    debug!("public_key_hash: {:?}", public_key_hash);
 
     let lock_script = Script::new_builder()
         .code_hash(CODE_HASH_SECP256K1_BLAKE160.pack())
@@ -84,6 +88,8 @@ pub fn validate_signature_of_receiver_and_sender(
         .hash_type(Byte::new(TYPE))
         .build();
     let lock_hash = hash::blake2b_160(lock_script.as_slice());
+
+    debug!("lock_hash: {:?}", lock_hash);
 
     if receiver_lock_hash == &lock_hash {
         Ok(true)

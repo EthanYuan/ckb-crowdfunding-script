@@ -49,20 +49,21 @@ pub fn main() -> Result<(), Error> {
     let mut receiver_lock_hash = [0u8; 20];
     let mut sender_lock_hash = [0u8; 20];
     receiver_lock_hash.copy_from_slice(&args[32..52]);
+    debug!("receiver_lock_hash: {:?}", receiver_lock_hash);
     sender_lock_hash.copy_from_slice(&args[52..72]);
 
     // unlock
-    // match helper::validate_signature_of_receiver_and_sender(&receiver_lock_hash, &sender_lock_hash)
-    // {
-    //     Ok(is_receiver) => {
-    //         if is_receiver {
-    //             claim::validate(&sender_lock_hash, &receiver_lock_hash, false)
-    //         } else {
-    //             withdraw::validate(&sender_lock_hash, false)
-    //         }
-    //     }
-    //     Err(_) => Err(Error::NoMatchedSignature),
-    // }
-
-    Ok(())
+    match helper::validate_signature_of_receiver_and_sender(&receiver_lock_hash, &sender_lock_hash)
+    {
+        Ok(is_receiver) => {
+            if is_receiver {
+                // claim::validate(&sender_lock_hash, &receiver_lock_hash, false)
+                Ok(())
+            } else {
+                // withdraw::validate(&sender_lock_hash, false)
+                Ok(())
+            }
+        }
+        Err(_) => Err(Error::NoMatchedSignature),
+    }
 }
