@@ -35,14 +35,15 @@ pub fn main() -> Result<(), Error> {
         return Err(Error::InvalidArgument);
     }
 
-    // check c_cell_type_args in cell_deps
+    // check args[0..32]
     let mut c_cell_type_args = [0u8; 32];
     c_cell_type_args.copy_from_slice(&args[0..32]);
-    let index = look_for_dep_with_data_hash(&c_cell_type_args)?;
+    let index = look_for_dep_with_data_hash(&c_cell_type_args).map_err(|_| Error::NoCCell)?;
     debug!("index is {:?}", index);
 
     // read project data
-    let crowdfunding_info = CrowdfundingInfo::try_from(index)?;
+    let crowdfunding_info =
+        CrowdfundingInfo::try_from(index).map_err(|_| Error::CCellInvalidData)?;
     debug!("crowdfunding_info is {:?}", crowdfunding_info);
 
     // parse script args

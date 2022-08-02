@@ -17,6 +17,8 @@ pub enum Error {
     WithdrawChequeInputSinceError,
     Secp256k1,
     NoMatchedSignature,
+    NoCCell,
+    CCellInvalidData,
 }
 
 impl From<SysError> for Error {
